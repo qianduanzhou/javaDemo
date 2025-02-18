@@ -14,6 +14,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/")
+    public String hello() {
+        return "Hello SpringBoot!";
+    }
+
     @PostMapping("/register")
     public ResponseResult<User> registerUser(@RequestBody User user) {
         User registeredUser = userService.registerUser(user);
