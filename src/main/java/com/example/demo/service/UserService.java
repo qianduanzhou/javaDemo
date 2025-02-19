@@ -19,6 +19,7 @@ public class UserService {
     private RedisUtil redisUtil;
 
     public User registerUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()) != null) return null;
         return userRepository.save(user);
     }
 
@@ -41,12 +42,6 @@ public class UserService {
             System.out.println("User not found, deletion skipped.");
             return false;
         }
-    }
-
-    // 分页查询所有用户
-    public Page<User> getAllUsers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
     }
 
     // 根据关键字查询用户

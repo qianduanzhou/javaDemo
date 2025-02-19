@@ -22,6 +22,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseResult<User> registerUser(@RequestBody User user) {
         User registeredUser = userService.registerUser(user);
+        if (registeredUser == null) return  ResponseResult.fail(500, "该用户已被注册");
         return ResponseResult.success("注册成功", registeredUser);
     }
 
