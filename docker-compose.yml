@@ -14,7 +14,6 @@ services:
       - my-network
     volumes:
       - /usr/local/mysql-docker:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # 初始化 SQL 脚本
 
   # Redis 服务
   redis:
