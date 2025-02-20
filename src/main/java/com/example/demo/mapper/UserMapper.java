@@ -1,9 +1,7 @@
 package com.example.demo.mapper;
 
-import com.example.demo.model.User;
+import com.example.demo.entity.User;
 import org.apache.ibatis.annotations.*;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
 
 import java.util.List;
 

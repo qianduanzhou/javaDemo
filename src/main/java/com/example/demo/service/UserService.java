@@ -1,61 +1,47 @@
 package com.example.demo.service;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.util.RedisUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.bean.PageBean;
+import com.example.demo.entity.User;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import java.util.List;
 
 @Service
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    /**
+     * 注册
+     * @param user 用户账号和密码
+     * @return 是否注册成功
+     */
+    boolean registerUser(User user);
 
-    @Autowired
-    private RedisUtil redisUtil;
+    /**
+     * 登录
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户实体
+     */
+    User loginUser(String username, String password);
 
-    public User registerUser(User user) {
-        if (userRepository.findByUsername(user.getUsername()) != null) return null;
-        return userRepository.save(user);
-    }
+    /**
+     * 删除用户
+     * @param id 删除的id
+     * @return 是否删除成功
+     */
+    boolean deleteUser(Long id);
 
-    public User loginUser(String username, String password) {
-        User user = userRepository.findByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
-            redisUtil.set(username, username);
-            return user;
-        }
-        return null;
-    }
+    /**
+     * 根据关键字查询用户
+     * @param username 用户名
+     * @param page 页面
+     * @param size 一页数量
+     * @return 分页数据
+     */
+    PageBean<User> searchUsersByName(String username, int page, int size);
 
-    // 删除用户
-    public Boolean deleteUser(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            System.out.println("User deleted successfully.");
-            return true;
-        } else {
-            System.out.println("User not found, deletion skipped.");
-            return false;
-        }
-    }
-
-    // 根据关键字查询用户
-    public Page<User> searchUsersByName(String username, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findByUsernameContaining(username, pageable);
-    }
-
-    // 查询用户信息
-    public Object getToken(String username) {
-        if (redisUtil.hasKey(username)) {
-            return redisUtil.get(username);
-        }
-        return null;
-    }
+    /**
+     * 查询用户token
+     * @param username 用户名
+     * @return 用户token
+     */
+    Object getToken(String username);
 }

@@ -1,18 +1,20 @@
 package com.example.demo.controller;
 
+import com.example.demo.bean.PageBean;
 import com.example.demo.dto.ResponseResult;
-import com.example.demo.model.User;
+import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
 
-@RestController // 使用 @RestController 替代 @Controller，直接返回 JSON 数据
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/")
     public String hello() {
@@ -21,9 +23,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseResult<User> registerUser(@RequestBody User user) {
-        User registeredUser = userService.registerUser(user);
-        if (registeredUser == null) return  ResponseResult.fail(500, "该用户已被注册");
-        return ResponseResult.success("注册成功", registeredUser);
+        boolean flag = userService.registerUser(user);
+        if (!flag) return  ResponseResult.fail(500, "该用户已被注册");
+        return ResponseResult.success("注册成功", user);
     }
 
     @PostMapping("/login")
@@ -49,10 +51,10 @@ public class UserController {
 
     // 根据关键字查询用户
     @GetMapping("/search")
-    public Page<User> searchUsersByName(@RequestParam String username,
-                                        @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "10") int size) {
-        return userService.searchUsersByName(username, page, size);
+    public ResponseResult<PageBean<User>> searchUsersByName(@RequestParam String username,
+                                                    @RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        return ResponseResult.success("查询成功", userService.searchUsersByName(username, page, size));
     }
 
     // 获取token
