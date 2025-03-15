@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user_db
     ports:
-      - "2206:2206"
+      - "2206:3306"
     networks:
       - my-network
     volumes:
